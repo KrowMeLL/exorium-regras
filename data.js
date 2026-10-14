@@ -90,3 +90,72 @@ const discordChapter={id:'discord',label:'Regras do Discord',eyebrow:'COMUNIDADE
 discordChapter.rules.forEach((r,i)=>{r.number='D'+(i+1);});
 chapters.push(modsChapter,discordChapter);
 const discordPenalty='Medidas aplicáveis: advertência, restrição de comunicação (timeout), expulsão ou banimento, conforme a gravidade e a reincidência. Duração: não há prazo específico definido para o Discord neste regulamento; a equipe deve informar o prazo ao aplicar a medida. Os tempos de /mute e /jail do Minecraft não se aplicam automaticamente ao Discord.';
+
+// Exemplos ilustram as normas existentes, sem criar novas infrações ou prazos.
+const articleExamples = {
+  1:'Uma ação que atrapalha o chat ou compromete a partida de outros jogadores deve ser analisada pelas regras correspondentes.',
+  2:'Um jogador com VIP está sujeito às mesmas regras que um jogador sem benefícios.',
+  3:'Emprestar a conta a um amigo não cancela automaticamente a punição por uma infração cometida por ele.',
+  4:'Afirmar que não leu a regra de spam não impede a aplicação da penalidade prevista.',
+  5:'Ao praticar spam pela primeira vez, o jogador recebe a advertência prevista para essa categoria.',
+  6:'Repetir spam depois da advertência resulta em silenciamento pelo prazo previsto no artigo de spam.',
+  7:'Usar uma macro não autorizada pode resultar diretamente em prisão, mesmo sem advertência anterior.',
+  8:'Utilizar um cheat de movimentação pode levar ao banimento direto previsto para trapaças.',
+  9:'Enviar a mesma mensagem várias vezes seguidas, ocupando o chat e dificultando outras conversas.',
+  10:'Publicar repetidamente mensagens inteiras em letras maiúsculas para perturbar o chat.',
+  11:'Divulgar o endereço de outro servidor para atrair jogadores, sem autorização da equipe.',
+  12:'Insultar outro jogador após uma disputa ou repetir provocações para constrangê-lo.',
+  13:'Atacar um jogador com ofensas discriminatórias ou incentivar violência contra um grupo.',
+  14:'Enviar mensagens sexualmente explícitas no chat ou por mensagem privada.',
+  15:'Insistir em mensagens intimidatórias dirigidas à mesma pessoa, mesmo após ela pedir que parem.',
+  16:'Fingir ser administrador para exigir itens ou informações de outro jogador.',
+  17:'Descobrir uma falha que duplica itens e usá-la para aumentar o próprio inventário, em vez de reportá-la.',
+  18:'Deixar um autoclicker executando ações automaticamente para obter recursos sem a autorização prevista.',
+  19:'Montar uma estrutura com o objetivo de sobrecarregar o servidor e causar travamentos.',
+  20:'Usar deliberadamente uma mecânica permitida para bloquear a atividade de outros jogadores.',
+  21:'Enganar outro jogador em uma negociação para receber itens sem cumprir o que foi combinado.',
+  22:'Transferir moedas geradas por uma falha para outras contas e inseri-las na economia do servidor.',
+  23:'Atrapalhar intencionalmente uma competição oficial para impedir que os participantes concluam o evento.',
+  24:'Ativar X-Ray para localizar recursos ou KillAura para obter vantagem em combate.',
+  25:'Tentar derrubar o servidor ou acessar seus sistemas sem autorização.',
+  26:'Vender moedas do jogo por dinheiro real sem autorização expressa da administração.',
+  27:'Publicar o endereço ou o telefone de outro jogador sem consentimento para intimidá-lo.',
+  28:'Entrar com uma conta alternativa para continuar jogando durante um banimento.',
+  29:'Uma nova ocorrência de spam após a punição anterior conta como repetição; a mesma mensagem não pode ser contada várias vezes para criar reincidências.',
+  30:'Depois da primeira prisão por uma categoria, novas ocorrências dessa categoria ampliam a prisão e, na terceira reincidência, resultam em banimento.',
+  31:'Organizar várias contas para explorar a mesma falha pode agravar a penalidade dentro dos limites previstos.',
+  32:'Enviar um vídeo com o momento da infração e o contexto da partida pelo atendimento oficial.',
+  33:'Pedir a revisão de uma punição informando a data, o motivo contestado e as provas que sustentam o pedido.',
+  34:'Antes de aplicar a penalidade, a equipe confere as provas e o histórico da categoria correspondente.',
+  35:'Itens obtidos por duplicação podem ser removidos, além da punição prevista para a infração.',
+  36:'Uma alteração das regras de jogabilidade é divulgada pelos canais oficiais da Network.',
+  37:'As regras passam a valer quando o regulamento é publicado oficialmente.',
+  d1:'Insultar ou perseguir um membro nos canais de texto da comunidade.',
+  d2:'Repetir a mesma mensagem ou marcar vários membros continuamente sem necessidade.',
+  d3:'Enviar um convite publicitário para outra comunidade sem autorização da equipe.',
+  d4:'Compartilhar o telefone de um membro sem consentimento para constrangê-lo.',
+  d5:'Reproduzir sons muito altos de propósito para interromper quem está conversando.',
+  d6:'Criar outra conta para contornar uma medida de moderação ou fingir ser um administrador.'
+};
+const articlePolicyRows = {
+  5:[['Primeira ocorrência leve prevista','Advertência','Sem duração de bloqueio'],['Repetição na mesma categoria','Silenciamento','Conforme o artigo da infração']],
+  6:[['Infração de comunicação prevista','Silenciamento','15 minutos a 24 horas, conforme a infração'],['Nova ocorrência após o silenciamento','Prisão','Conforme o artigo da infração']],
+  7:[['Primeira ocorrência sujeita à prisão','Prisão','Conforme o artigo da infração'],['1ª reincidência após a primeira prisão','Prisão ampliada','Conforme o artigo; se não fixado, definido pela administração'],['2ª reincidência após a primeira prisão','Prisão novamente ampliada','Definido pela administração'],['3ª reincidência após a primeira prisão','Banimento','Conforme a infração; se não fixado, definido pela administração']],
+  8:[['Infração grave ou reincidência prevista','Banimento','15 dias, 30 dias ou permanente, conforme a infração']],
+  29:[['Nova ocorrência comprovada na mesma categoria','Progressão da penalidade correspondente','Conforme o artigo da infração']],
+  30:[['Primeira ocorrência leve prevista','Advertência','Sem duração de bloqueio'],['Repetição da infração leve','Silenciamento','Conforme o artigo da infração'],['Nova ocorrência após o silenciamento, ou infração de jogabilidade prevista','Prisão','Conforme o artigo da infração'],['1ª reincidência após a primeira prisão','Prisão ampliada','Conforme o artigo; se não fixado, definido pela administração'],['2ª reincidência após a primeira prisão','Prisão novamente ampliada','Definido pela administração'],['3ª reincidência após a primeira prisão','Banimento','Conforme a infração; se não fixado, definido pela administração'],['Infração grave prevista','Banimento direto','Conforme o artigo da infração']],
+  31:[['Agravante comprovada','Agravamento da penalidade','Dentro dos limites previstos para a infração']],
+  32:[['Denúncia falsa comprovada e feita de má-fé','A definir pela administração','Não especificado no regulamento']],
+  35:[['Vantagem ilícita comprovada','Remoção dos recursos obtidos (medida complementar)','Não se aplica']]
+};
+const minecraftChapters=chapters.filter(c=>c.id!=='mods'&&c.id!=='discord');
+const minecraftRules=minecraftChapters.flatMap(c=>c.rules);
+const commandNames={warn:'advertência',mute:'silenciamento',jail:'prisão',ban:'banimento'};
+function readableText(value){
+  return String(value)
+    .replace(/\s*·\s*\/(warn|mute|jail|ban)\b/g,'')
+    .replace(/\s*\(\/(warn|mute|jail|ban)\)/g,'')
+    .replace(/\/(warn|mute|jail|ban)\b/g,(_,name)=>commandNames[name])
+    .replace(/\bmute\b/g,'silenciamento').replace(/\bjail\b/g,'prisão');
+}
+chapters.forEach(c=>c.rules.forEach(r=>{for(let i=1;i<r.length;i++)r[i]=readableText(r[i]);}));

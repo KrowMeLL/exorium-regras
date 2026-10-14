@@ -1,31 +1,162 @@
-const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-const icons = {inicio:'<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>',gerais:'<path d="M5 3h14v18H5zM8 7h8M8 11h8M8 15h5"/>',punicoes:'<path d="M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7zM12 8v5M12 16h.01"/>',comunicacao:'<path d="M3 4h18v13H9l-6 4zM7 8h10M7 12h6"/>',jogabilidade:'<path d="M7 7h10l4 12h-5l-3-4h-2l-3 4H3zM8 9v5M5.5 11.5h5M16 11h.01M18 14h.01"/>',graves:'<path d="m12 3 10 18H2zM12 9v5M12 17h.01"/>',tabela:'<path d="M3 4h18v16H3zM3 9h18M3 14h18M11 4v16"/>',recursos:'<path d="M4 13v-2a8 8 0 0 1 16 0v6c0 3-4 4-8 4M4 11H2v7h5v-7zm16 0h2v7h-5v-7z"/>'};
-icons.mods='<path d="M4 4h16v16H4zM8 8h8v8H8zM8 1v3M16 1v3M8 20v3M16 20v3M1 8h3M20 8h3"/>';
-icons.discord='<path d="M5 5h14l3 13-6 2-2-3h-4l-2 3-6-2zM8 11h.01M16 11h.01"/>';
-const navItems=[['inicio','Visão geral'],...chapters.map(c=>[c.id,c.label]),['tabela','Tabela de punições']];
-function chapterRange(c){return c.rules.length ? `Art. ${c.rules[0].number}–${c.rules[c.rules.length-1].number}` : '5 clients · 12 mods';}
-function navLink(id){const label=navItems.find(n=>n[0]===id)[1],c=chapters.find(c=>c.id===id);return `<a href="#${id}" data-page="${id}"><svg viewBox="0 0 24 24" aria-hidden="true">${icons[id]}</svg><span class="nav-copy">${label}${c?`<small>${chapterRange(c)}</small>`:''}</span></a>`;}
-$('#nav').innerHTML=navLink('inicio')+'<p class="nav-group-title">Minecraft</p>'+chapters.slice(0,5).map(c=>navLink(c.id)).join('')+navLink('mods')+'<p class="nav-group-title">Comunidade</p>'+navLink('discord')+navLink('recursos')+'<p class="nav-group-title">Consulta rápida</p>'+navLink('tabela');
-function badge(text){return text.replace(/\/(warn|mute|jail|ban)([^/]*?)(?=$)/g,(m,t)=>`<span class="badge ${t}">${esc(m)}</span>`)}
-function progress(){return `<div class="progress-panel"><h2>Entenda a progressão das punições</h2><div class="steps"><span class="badge">/warn</span><span class="step-label">›</span><span class="badge mute">/mute</span><span class="step-label">›</span><span class="badge jail">/jail</span><span class="step-label">›</span><span class="badge jail">/jail ampliada</span><span class="step-label">›</span><span class="badge jail">/jail agravada</span><span class="step-label">›</span><span class="badge ban">/ban</span></div><p>Fluxo das infrações leves. Prisões diretas e banimentos por infrações graves não dependem de aviso prévio.</p><a class="text-link" href="#punicoes">Ver os critérios de reincidência</a></div>`}
-function home(){return `<section class="hero"><div class="hero-copy"><p class="eyebrow">EXORIUM NETWORK · REGULAMENTO</p><h1>Seu próximo nível<br>começa aqui.</h1><p>Conheça as regras, entenda as punições e ajude a construir uma comunidade justa.</p></div><img class="hero-mark" src="logo.webp" width="220" height="240" alt="Logo Exorium: letra E com tema Candy"></section><div class="section-head"><h2>Encontre o que você precisa</h2><span>8 categorias · Minecraft e Discord</span></div><div class="card-grid">${chapters.map((c,i)=>`<a class="category-card" href="#${c.id}"><span class="card-icon">${String(i+1).padStart(2,'0')}</span><div><h3>${c.label}</h3><p>${c.description}</p></div><span class="chevron">›</span></a>`).join('')}</div>${progress()}`;}
-function penaltiesMarkup(r){
- const refs=rulePenalties[r[0]],note=penaltyNotes[r[0]];
- if(String(r[0]).startsWith('d'))return `<div class="rule-penalty"><h3>MODERAÇÃO NO DISCORD</h3><p class="penalty-note">${esc(discordPenalty)}</p></div>`;
- if(!refs)return note?`<div class="policy-note">${esc(note)}</div>`:'';
- const rows=refs.map(([gi,ri])=>{const g=penaltyGroups[gi],row=g.rows[ri];return `<div class="penalty-item"><div class="penalty-name">${esc(row[0])}</div><div class="penalty-values">${row.slice(1).map((v,i)=>`<span>${esc(g.heads[i+1])}: ${badge(v)}</span>`).join('')}</div></div>`;}).join('');
- const progression=refs.some(([g])=>g<2)?'<p class="penalty-note">Após a primeira prisão: 1ª reincidência, prisão ampliada; 2ª, prisão novamente ampliada; 3ª, banimento. Prazos não fixados são definidos pela administração.</p>':'';
- return `<div class="rule-penalty"><h3>PUNIÇÃO E DURAÇÃO</h3>${rows}${note?`<p class="penalty-note">${esc(note)}</p>`:''}${progression}</div>`;
+const $ = selector => document.querySelector(selector);
+const esc = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const norm = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const icons = {
+  inicio:'<path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/>',
+  gerais:'<path d="M5 3h14v18H5zM8 7h8M8 11h8M8 15h5"/>',
+  'carta-magna':'<path d="M12 5C8 2 4 3 2 4v16c3-2 7-1 10 1 3-2 7-3 10-1V4c-2-1-6-2-10 1v16M5 8h4M5 12h4M15 8h4M15 12h4"/>',
+  discord:'<path d="M5 5h14l3 13-6 2-2-3h-4l-2 3-6-2zM8 11h.01M16 11h.01"/>'
+};
+const navItems = [['inicio','Visão Geral'],['gerais','Regras Gerais'],['carta-magna','Carta Magna'],['discord','Discord']];
+const icon = id => `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[id]}</svg>`;
+$('#nav').innerHTML=navItems.map(([id,label])=>`<a href="#${id}" data-page="${id}">${icon(id)}<span>${label}</span></a>`).join('');
+
+function home(){
+  return `<section class="hero"><div class="hero-copy"><h1>Regulamento<br>do Servidor</h1></div><img class="hero-mark" src="logo.webp" width="220" height="240" alt="Logo da Exorium Network"></section><div class="section-head"><h2>Acesso rápido</h2></div><div class="card-grid">${navItems.slice(1).map(([id,label])=>`<a class="category-card" href="#${id}"><span class="card-icon">${icon(id)}</span><h3>${label}</h3><span class="chevron" aria-hidden="true">↗</span></a>`).join('')}</div>`;
 }
-function modsPage(){return `<div class="page-intro"><p class="eyebrow">${modsChapter.eyebrow}</p><h1>${modsChapter.title}</h1><p>${modsChapter.intro}</p></div><div class="allowed-grid"><section class="allowed-panel"><h2>Clients Permitidos</h2><ul class="allowed-list">${allowedClients.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section><section class="allowed-panel"><h2>Mods Permitidos</h2><ul class="allowed-list">${allowedMods.map(x=>`<li>${esc(x)}${x==='Litematica'?'<strong class="restriction">Printer não é permitido.</strong>':''}</li>`).join('')}</ul></section></div><div class="callout"><strong>A permissão depende das funcionalidades utilizadas.</strong><br>Mesmo em um client ou mod listado, continuam proibidos cheats, automação não autorizada e recursos que proporcionem vantagens vedadas pelo regulamento. O Litematica é permitido sem Printer.</div><a class="text-link" href="#jogabilidade">Consultar as regras de jogabilidade</a>`;}
-function ruleMarkup(r,open){return `<details class="rule" id="art-${r[0]}" ${open?'open':''}><summary><span class="art">Art. ${r.number}</span><span class="rule-title">${esc(r[1])}</span></summary><div class="rule-body">${r.slice(2).map(p=>`<p>${esc(p)}</p>`).join('')}${penaltiesMarkup(r)}<a class="rule-anchor" href="#art-${r[0]}">Link para este artigo</a></div></details>`}
-function page(c,article){if(c.id==='mods')return modsPage();let i=chapters.indexOf(c),next=chapters[i+1];return `<div class="page-intro"><p class="eyebrow">${c.eyebrow}</p><h1>${c.title}</h1><p>${c.intro}</p></div>${c.id==='punicoes'?progress():''}${c.id==='recursos'?'<div class="callout"><strong>O que incluir no pedido</strong><br>Informe seu nick, a data, o ocorrido ou a punição contestada e as provas com contexto. Encaminhe à equipe pelo canal oficial de atendimento que você utiliza na Network.</div>':''}<div class="toolbar"><button class="text-button" id="expand">Expandir todos</button></div>${c.rules.map((r,i)=>ruleMarkup(r,article?String(r[0])===String(article):i===0)).join('')}${!['recursos','discord'].includes(c.id)?'<a class="text-link" href="#tabela">Consultar os prazos na tabela de punições</a>':''}${next?`<a class="next-page" href="#${next.id}"><small>Próxima seção</small>${next.label}</a>`:''}`}
-function table(){return `<div class="page-intro"><p class="eyebrow">CONSULTA RÁPIDA</p><h1>Tabela de punições.</h1><p>Consulte a penalidade inicial e sua progressão. O histórico considerado é o da mesma categoria de infração.</p></div><div class="callout"><strong>Uma advertência. Depois, punição.</strong><br>Infrações leves recebem apenas um /warn por categoria. A repetição gera /mute; a nova infração após o mute gera /jail. A terceira reincidência após a primeira prisão resulta em /ban.</div>${penaltyGroups.map(g=>`<h2>${g.title}</h2><div class="table-wrap" tabindex="0" role="region" aria-label="Tabela: ${g.title}"><table><thead><tr>${g.heads.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${g.rows.map(r=>`<tr>${r.map((v,i)=>`<td>${i?badge(v):esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="table-note">${g.note}</p>`).join('')}<a class="text-link" href="#punicoes">Ler as regras de aplicação e reincidência</a>`}
-function closeMenu(){$('#sidebar').classList.remove('open');$('#menu').setAttribute('aria-expanded','false')}
-function render(){let hash;try{hash=decodeURIComponent(location.hash.slice(1))||'inicio'}catch{hash='inicio'}if(hash==='main')hash='inicio';const article=/^art-(?:\d+|d\d+)$/.test(hash)?hash.slice(4):null;let c=chapters.find(c=>c.id===hash||c.rules.some(r=>String(r[0])===article));let id=c?c.id:hash==='tabela'?'tabela':'inicio';$('#search').value='';$('#content').innerHTML=id==='inicio'?home():id==='tabela'?table():page(c,article);$('#crumb').textContent=navItems.find(x=>x[0]===id)[1];document.title=`${$('#crumb').textContent} · Exorium Network`;document.querySelectorAll('#nav a').forEach(a=>{a.classList.toggle('active',a.dataset.page===id);if(a.dataset.page===id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});closeMenu();const exp=$('#expand');if(exp)exp.onclick=()=>{let ds=[...document.querySelectorAll('.rule')],open=ds.some(d=>!d.open);ds.forEach(d=>d.open=open);exp.textContent=open?'Recolher todos':'Expandir todos'};if(article)requestAnimationFrame(()=>{document.getElementById('art-'+article)?.scrollIntoView({block:'center'})});else window.scrollTo(0,0)}
-$('#search').addEventListener('input',e=>{const raw=e.target.value.trim(),q=norm(raw);if(!q){render();$('#search').focus();return}const hits=chapters.flatMap(c=>c.rules.filter(r=>norm(r.join(' ')+' '+r.number+' '+(penaltyNotes[r[0]]||'')).includes(q)).map(r=>({c,r})));const modHits=[...allowedClients,...allowedMods].filter(x=>norm(x).includes(q));const penalties=penaltyGroups.flatMap(g=>g.rows.filter(r=>norm(r.join(' ')).includes(q)).map(r=>({g,r})));$('#crumb').textContent='Busca';$('#content').innerHTML=`<section class="search-results"><p class="eyebrow">EM TODO O REGULAMENTO</p><h1>Resultados para “${esc(raw)}”</h1><p role="status">${hits.length+penalties.length+modHits.length} resultado(s)</p>${hits.map(({c,r})=>`<a class="result" href="#art-${r[0]}"><small>${c.label} · Art. ${r.number}</small><h2>${esc(r[1])}</h2><p>${esc(r[2])}</p></a>`).join('')}${modHits.map(x=>`<a class="result" href="#mods"><small>Mods e clients permitidos</small><h2>${esc(x)}</h2><p>${x==='Litematica'?'Printer não é permitido.':'Consulte a lista de permissões e os limites de uso.'}</p></a>`).join('')}${penalties.map(({g,r})=>`<a class="result" href="#tabela"><small>Tabela de punições · ${g.title}</small><h2>${esc(r[0])}</h2><p>${r.slice(1).map(esc).join(' · ')}</p></a>`).join('')}${hits.length+penalties.length+modHits.length===0?'<div class="empty">Nenhuma regra encontrada. Tente “spam”, “macro”, “ban” ou “recursos”.</div>':''}</section>`});
-$('#menu').onclick=()=>{let open=$('#sidebar').classList.toggle('open');$('#menu').setAttribute('aria-expanded',String(open))};document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();if(document.activeElement===$('#search')){$('#search').value='';render()}}if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();$('#search').focus()}});document.addEventListener('click',e=>{if(!e.target.closest('#sidebar')&&!e.target.closest('#menu'))closeMenu()});window.addEventListener('hashchange',render);render();
-// Reabrir a seção também quando o link já é o fragmento atual (ex.: após uma busca).
-document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a&&a.getAttribute('href')===location.hash&&a.getAttribute('href')!=='#main'){e.preventDefault();render()}});
+
+function modsMarkup(){
+  return `<div class="allowed-grid" id="mods-permitidos"><section class="allowed-panel"><h2>Clients Permitidos</h2><ul class="allowed-list">${allowedClients.map(name=>`<li>${esc(name)}</li>`).join('')}</ul></section><section class="allowed-panel"><h2>Mods Permitidos</h2><ul class="allowed-list">${allowedMods.map(name=>`<li>${esc(name)}${name==='Litematica'?'<strong class="restriction">Printer não é permitido.</strong>':''}</li>`).join('')}</ul></section></div><div class="callout">Mesmo nos clients e mods permitidos, continuam proibidos cheats, automações não autorizadas e recursos que ofereçam vantagens vedadas pelo regulamento.</div>`;
+}
+
+function generalPage(){
+  return `<div class="page-intro"><h1>Regras Gerais</h1></div><section class="general-principles"><h2>Princípios do servidor</h2><ul><li>Respeite os jogadores e a equipe.</li><li>As regras se aplicam a todos, incluindo jogadores com VIP.</li><li>Você é responsável pelas atividades realizadas na sua conta.</li><li>Jogue sem trapaças, fraudes ou vantagens não autorizadas.</li><li>Encaminhe denúncias e pedidos de revisão pelos canais oficiais, com contexto e provas.</li></ul><a class="text-link" href="#carta-magna">Ler todos os artigos <span aria-hidden="true">↗</span></a></section>${modsMarkup()}`;
+}
+
+// Mantém os prazos da tabela original, separando nome da penalidade e duração.
+function splitPenalty(value){
+  const match=value.match(/^\/(warn|mute|jail|ban)(?:\s+(.+))?$/);
+  if(match){
+    const names={warn:'Advertência',mute:'Silenciamento',jail:'Prisão',ban:'Banimento'};
+    const duration=match[1]==='warn'?'Sem duração de bloqueio':(match[2]||'Definido pela administração');
+    return [names[match[1]],duration.replace(/(\d+)h\b/g,'$1 horas').replace(/(\d+) min\b/g,'$1 minutos').replace(/^1 horas$/,'1 hora').replace(/^permanente$/,'Permanente')];
+  }
+  if(value==='Prisão ampliada')return ['Prisão ampliada','Definido pela administração'];
+  if(value==='Conforme gravidade')return ['Conforme gravidade','Definido pela administração'];
+  if(value==='Prorrogação ou /ban permanente')return ['Prorrogação do banimento ou banimento permanente','Prorrogação a definir ou permanente'];
+  return [readableText(value),'Não especificado no regulamento'];
+}
+
+function prisonProgression(start=1){
+  const rows=[];
+  if(start<=1)rows.push(['1ª reincidência após a primeira prisão','Prisão ampliada','Definido pela administração']);
+  if(start<=2)rows.push(['2ª reincidência após a primeira prisão','Prisão novamente ampliada','Definido pela administração']);
+  rows.push(['3ª reincidência após a primeira prisão','Banimento','Definido pela administração']);
+  return rows;
+}
+
+function penaltySections(rule){
+  const id=rule[0];
+  if(String(id).startsWith('d'))return [{rows:[['Conforme gravidade e reincidência','Advertência, restrição de comunicação, expulsão ou banimento','Sem prazo fixo; informado pela equipe']]}];
+  const refs=rulePenalties[id];
+  if(!refs)return [{rows:articlePolicyRows[id]||[['Não se aplica','Artigo sem punição autônoma','Não se aplica']]}];
+  if(id===24)return [{title:'Uso de cheats ou ferramentas não autorizadas',rows:[['Primeira ocorrência',...splitPenalty(penaltyGroups[2].rows[0][1])],['Reincidência',...splitPenalty(penaltyGroups[2].rows[1][1])]]}];
+  return refs.map(([groupIndex,rowIndex])=>{
+    const source=penaltyGroups[groupIndex].rows[rowIndex];
+    const rows=[['Primeira ocorrência',...splitPenalty(source[1])]];
+    if(source[2]){
+      const incidence=groupIndex===1||source[1].startsWith('/jail')?'1ª reincidência após a primeira prisão':'Repetição na mesma categoria';
+      rows.push([incidence,...splitPenalty(source[2])]);
+    }
+    if(groupIndex===0&&rowIndex<4){
+      rows.push(['Nova ocorrência após o silenciamento','Prisão',rowIndex<2?'1 hora':'2 horas'],...prisonProgression());
+    }else if(groupIndex===0&&rowIndex<9){
+      rows.push(...prisonProgression());
+    }else if(groupIndex===1||(groupIndex===0&&rowIndex===9)){
+      rows.push(...prisonProgression(2));
+    }
+    return {title:refs.length>1?source[0]:'',rows};
+  });
+}
+
+function penaltiesMarkup(rule){
+  const tables=penaltySections(rule).map(section=>`<div class="penalty-section">${section.title?`<h4>${esc(section.title)}</h4>`:''}<div class="table-wrap" tabindex="0" role="region" aria-label="Punições do artigo ${esc(rule.number)}${section.title?' — '+esc(section.title):''}"><table><thead><tr><th scope="col">Incidência</th><th scope="col">Punição</th><th scope="col">Tempo</th></tr></thead><tbody>${section.rows.map(row=>`<tr>${row.map((value,i)=>`<${i?'td':'th scope="row"'}>${esc(value)}</${i?'td':'th'}>`).join('')}</tr>`).join('')}</tbody></table></div></div>`).join('');
+  const note=String(rule[0]).startsWith('d')?'Os tempos de silenciamento e prisão do Minecraft não se aplicam automaticamente ao Discord.':rule[0]===24?penaltyGroups[2].note:penaltyNotes[rule[0]];
+  return `<section class="punishment"><h3>Tabela de Punição</h3>${tables}${note?`<p class="table-note">${esc(readableText(note))}</p>`:''}</section>`;
+}
+
+function ruleMarkup(rule,open=false){
+  return `<details class="rule" id="art-${rule[0]}"${open?' open':''}><summary><span class="rule-heading"><span class="art">Art. ${esc(rule.number)}</span><span class="article-dash" aria-hidden="true"> – </span><span class="rule-title">${esc(rule[1])}</span></span></summary><div class="rule-body"><section class="article-description"><h3>Descrição</h3>${rule.slice(2).map(paragraph=>`<p>${esc(paragraph)}</p>`).join('')}</section><section class="example"><h3>Exemplo</h3><p>${esc(articleExamples[rule[0]])}</p></section>${penaltiesMarkup(rule)}<a class="rule-anchor" href="#art-${rule[0]}">Link para este artigo</a></div></details>`;
+}
+
+function chapterMarkup(chapter,article,expandAll=false){
+  return `<section class="article-group" id="grupo-${chapter.id}"><div class="group-heading"><h2>${esc(chapter.label)}</h2><span>Art. ${chapter.rules[0].number}–${chapter.rules[chapter.rules.length-1].number}</span></div>${chapter.rules.map(rule=>ruleMarkup(rule,expandAll||String(rule[0])===String(article))).join('')}</section>`;
+}
+
+function cartaPage(article,expandAll=false){
+  return `<div class="page-intro"><h1>Carta Magna</h1></div><div class="article-index"><label for="chapter-jump">Ir para assunto</label><select id="chapter-jump"><option value="">Selecione um assunto</option>${minecraftChapters.map(chapter=>`<option value="grupo-${chapter.id}">${esc(chapter.label)}</option>`).join('')}</select><button class="text-button" id="expand">Expandir todos</button></div>${minecraftChapters.map(chapter=>chapterMarkup(chapter,article||1,expandAll)).join('')}`;
+}
+
+function discordPage(article,expandAll=false){
+  return `<div class="page-intro"><h1>Discord</h1></div><div class="toolbar"><button class="text-button" id="expand">Expandir todos</button></div>${discordChapter.rules.map((rule,i)=>ruleMarkup(rule,expandAll||(article?String(rule[0])===String(article):i===0))).join('')}`;
+}
+
+function closeMenu(){
+  $('#sidebar').classList.remove('open');
+  $('#menu').setAttribute('aria-expanded','false');
+}
+
+function render(){
+  let hash;
+  try{hash=decodeURIComponent(location.hash.slice(1))||'inicio';}catch{hash='inicio';}
+  const article=/^art-(?:\d+|d\d+)$/.test(hash)?hash.slice(4):null;
+  const articleChapter=chapters.find(chapter=>chapter.rules.some(rule=>String(rule[0])===article));
+  const oldChapter=minecraftChapters.find(chapter=>chapter.id===hash&&hash!=='gerais');
+  const group=minecraftChapters.find(chapter=>'grupo-'+chapter.id===hash);
+  let page='inicio';
+  if(articleChapter)page=articleChapter.id==='discord'?'discord':'carta-magna';
+  else if(hash==='mods'||hash==='mods-permitidos'||hash==='gerais')page='gerais';
+  else if(oldChapter||group||hash==='carta-magna'||hash==='tabela')page='carta-magna';
+  else if(hash==='discord')page='discord';
+  const selectedArticle=article||(oldChapter?oldChapter.rules[0][0]:group?group.rules[0][0]:null);
+  $('#search').value='';
+  $('#content').innerHTML=page==='inicio'?home():page==='gerais'?generalPage():page==='discord'?discordPage(selectedArticle):cartaPage(selectedArticle);
+  $('#crumb').textContent=navItems.find(item=>item[0]===page)[1];
+  document.title=`${$('#crumb').textContent} · Exorium Network`;
+  document.querySelectorAll('#nav a').forEach(link=>{
+    link.classList.toggle('active',link.dataset.page===page);
+    if(link.dataset.page===page)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+  });
+  closeMenu();
+  const expand=$('#expand');
+  if(expand)expand.onclick=()=>{
+    const details=[...document.querySelectorAll('.rule')];
+    const open=details.some(item=>!item.open);
+    details.forEach(item=>item.open=open);
+    expand.textContent=open?'Recolher todos':'Expandir todos';
+  };
+  const jump=$('#chapter-jump');
+  if(jump)jump.onchange=()=>{if(jump.value)location.hash=jump.value;};
+  const target=article?'art-'+article:group?'grupo-'+group.id:oldChapter?'grupo-'+oldChapter.id:['mods','mods-permitidos'].includes(hash)?'mods-permitidos':null;
+  if(target)requestAnimationFrame(()=>document.getElementById(target)?.scrollIntoView({block:'start'}));else window.scrollTo(0,0);
+}
+
+$('#search').addEventListener('input',event=>{
+  const raw=event.target.value.trim(),query=norm(raw);
+  if(!query){render();$('#search').focus();return;}
+  const hits=chapters.flatMap(chapter=>chapter.rules.filter(rule=>{
+    const text=[rule.join(' '),`Art. ${rule.number}`,`Artigo ${rule.number}`,articleExamples[rule[0]],JSON.stringify(penaltySections(rule))].join(' ');
+    return norm(text).includes(query);
+  }).map(rule=>({chapter,rule})));
+  const modHits=[...allowedClients,...allowedMods].filter(name=>norm(name).includes(query));
+  $('#crumb').textContent='Busca';
+  document.querySelectorAll('#nav a').forEach(link=>{link.classList.remove('active');link.removeAttribute('aria-current');});
+  $('#content').innerHTML=`<section class="search-results"><h1>Resultados para “${esc(raw)}”</h1><p role="status">${hits.length+modHits.length} resultado(s)</p>${hits.map(({chapter,rule})=>`<a class="result" href="#art-${rule[0]}"><small>${chapter.id==='discord'?'Discord':'Carta Magna'}</small><h2>Art. ${esc(rule.number)} – ${esc(rule[1])}</h2></a>`).join('')}${modHits.map(name=>`<a class="result" href="#mods-permitidos"><small>Regras Gerais</small><h2>${esc(name)}${name==='Litematica'?' (Printer não é permitido)':''}</h2></a>`).join('')}${hits.length+modHits.length===0?'<div class="empty">Nenhuma regra encontrada. Tente “spam”, “macro” ou “recursos”.</div>':''}</section>`;
+});
+$('#menu').onclick=()=>{
+  const open=$('#sidebar').classList.toggle('open');
+  $('#menu').setAttribute('aria-expanded',String(open));
+};
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){
+    closeMenu();
+    if(document.activeElement===$('#search')){$('#search').value='';render();}
+  }
+});
+document.addEventListener('click',event=>{
+  if(!event.target.closest('#sidebar')&&!event.target.closest('#menu'))closeMenu();
+  const link=event.target.closest('a[href^="#"]');
+  if(link&&link.getAttribute('href')===location.hash&&link.getAttribute('href')!=='#main'){event.preventDefault();render();}
+});
+window.addEventListener('hashchange',render);
+render();

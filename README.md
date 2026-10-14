@@ -1,15 +1,19 @@
 # Exorium Network — Regulamento do Servidor
 
-Site estático publicado no GitHub Pages. Inclui 37 artigos do Minecraft, organizados em sequência por categoria; regras do Discord (D1–D6); 5 clients e 12 mods permitidos; busca; tabelas; e punições junto às infrações.
+Site estático no GitHub Pages, com quatro seções: Visão Geral, Regras Gerais, Carta Magna e Discord.
 
-Os identificadores de links dos artigos originais foram preservados. A numeração visível acompanha a ordem das categorias. As penalidades dos artigos e da tabela usam os mesmos dados, em data.js. Os prazos não definidos permanecem expressamente indicados; os tempos do Minecraft não são automaticamente aplicados ao Discord.
+Carta Magna reúne os 37 artigos do Minecraft, em ordem por assunto. Cada artigo contém descrição, exemplo e tabela com Incidência, Punição e Tempo. As seis regras do Discord seguem o mesmo formato. Regras Gerais reúne os princípios do servidor e a lista de 5 clients e 12 mods permitidos.
+
+A navegação não apresenta subtítulos ou o quadro de comandos. As punições são exibidas por nome, com os prazos já definidos no regulamento. Prazos não especificados permanecem indicados como tal. Exemplos são ilustrativos. Artigos de orientação sem penalidade própria são identificados na tabela.
+
+Os identificadores dos artigos e os links das categorias anteriores continuam funcionando. A numeração visível acompanha a ordem dos assuntos. Há busca por texto, artigos, exemplos e penalidades, expansão de artigos e navegação interna por assunto.
 
 ## Arquivos
-- index.html: estrutura e links externos.
-- data.js: regras, listas e penalidades.
-- app.js: navegação, busca e apresentação.
+- index.html: estrutura, navegação e links externos.
+- data.js: regras, exemplos, listas e penalidades originais.
+- app.js: apresentação, busca, rotas e conversão de penalidades para tabelas.
 - style.css: aparência e responsividade.
-- regulamento.html: leitura sem JavaScript; atualizar junto com as regras.
+- regulamento.html: regulamento completo para leitura sem JavaScript. Atualizar junto com o conteúdo.
 - banner.webp e logo.webp: imagens fornecidas para o servidor.
 
-Publicação: branch main, pasta raiz, GitHub Pages. Não exige compilação, instalação ou serviços externos.
+Publicação: branch main, pasta raiz, GitHub Pages. Sem compilação ou dependências externas.
