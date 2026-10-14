@@ -7,10 +7,10 @@ const chapters = [
 {id:'punicoes',label:'Punições e reincidência',eyebrow:'02 · Como funciona',title:'Consequências claras. Jogo justo.',intro:'A penalidade depende da natureza da infração e do histórico da mesma categoria. Infrações graves podem resultar em banimento direto.',rules:[
 [5,'Advertência · /warn','Aplicada uma única vez por categoria de infração leve, quando expressamente prevista. A repetição da conduta da mesma categoria resulta em silenciamento, sem novo aviso. A advertência fica registrada no histórico disciplinar.'],
 [6,'Silenciamento · /mute','Aplicado às infrações de comunicação, inclusive mensagens privadas, placas, livros, nomes de itens e recursos equivalentes. A duração observa a gravidade e os prazos da tabela.','A repetição da mesma infração após o cumprimento do mute resulta em /jail. Usar outras contas ou recursos para contornar o silenciamento constitui infração autônoma.'],
-[7,'Prisão · /jail','Aplicada diretamente às infrações de jogabilidade ou após reincidência de condutas punidas com /mute. A primeira reincidência após prisão amplia sua duração; a segunda amplia novamente; a terceira resulta em banimento.','A terceira reincidência corresponde à quarta ocorrência punível com prisão na mesma categoria. Durante a prisão, aplicam-se as restrições de movimentação, interação, mineração e demais atividades implementadas pelo sistema.'],
+[7,'Prisão · /jail','Aplicada diretamente às infrações de jogabilidade ou após reincidência de condutas punidas com /mute. A primeira e a segunda reincidências após prisão aumentam sua duração em 30 minutos ou 1 hora, conforme o artigo; a terceira resulta em banimento pelo prazo indicado na tabela.','A terceira reincidência corresponde à quarta ocorrência punível com prisão na mesma categoria. Durante a prisão, aplicam-se as restrições de movimentação, interação, mineração e demais atividades implementadas pelo sistema.'],
 [8,'Banimento · /ban','Aplicado a infrações graves, tentativas de comprometimento da segurança e reincidências previstas. Pode ser temporário ou permanente, conforme a infração.','O banimento permanente é reservado às condutas de maior gravidade, especialmente quando afetam a segurança, a economia ou a integridade da Network. Contas alternativas usadas para evitar punições podem ser bloqueadas.'],
 [29,'Contagem de reincidência','A reincidência exige nova ocorrência comprovada de infração da mesma categoria, após a aplicação de penalidade anterior. Infrações distintas só integram a mesma categoria quando sua equivalência estiver prevista na tabela.','O histórico permanece registrado pelo período de validade estabelecido pela administração. Uma mesma conduta não pode ser contabilizada artificialmente como múltiplas reincidências.'],
-[30,'Progressão das punições','Infração leve: /warn único, seguido de /mute na repetição. Nova infração após /mute: /jail. Infrações de jogabilidade sujeitas à prisão: /jail direto.','Após a primeira prisão: primeira reincidência, prisão ampliada; segunda reincidência, prisão novamente ampliada; terceira reincidência, /ban. Infrações graves permitem /ban direto, independentemente do histórico.'],
+[30,'Progressão das punições','Infração leve: /warn único, seguido de /mute na repetição. Nova infração após /mute: /jail. Infrações de jogabilidade sujeitas à prisão: /jail direto.','Após a primeira prisão: primeira reincidência, prisão com acréscimo de 30 minutos ou 1 hora; segunda reincidência, prisão com o mesmo acréscimo adicional; terceira reincidência, banimento pelo prazo do artigo. Infrações graves permitem /ban direto, independentemente do histórico.'],
 [31,'Circunstâncias agravantes','Dentro dos limites da tabela, podem justificar agravamento: atuação coordenada, prejuízo coletivo relevante, uso de contas alternativas, ocultação deliberada de provas e obtenção de vantagens significativas.']]},
 {id:'comunicacao',label:'Comunicação e convivência',eyebrow:'03 · Chat e convivência',title:'Respeite quem joga com você.',intro:'As regras de comunicação abrangem chat público, mensagens privadas e outros recursos de texto disponíveis na Network.',rules:[
 [9,'Spam e flood','É proibido enviar mensagens repetitivas, sequências excessivas de caracteres, símbolos ou conteúdos sem finalidade comunicativa, de modo a prejudicar o funcionamento do chat.'],
@@ -42,14 +42,6 @@ const chapters = [
 [35,'Restituição de vantagens indevidas','A aplicação de punições não impede a remoção de itens, moedas, progressos, benefícios ou recursos obtidos em decorrência de infrações.'],
 [36,'Atualização do regulamento','A administração pode atualizar este regulamento para adequá-lo às necessidades técnicas e operacionais da Network, mediante divulgação oficial.'],
 [37,'Vigência','Este regulamento entra em vigor na data de sua publicação nos canais oficiais da Exorium Network.']]}];
-const penaltyGroups = [
-{title:'Comunicação',note:'Nas quatro primeiras infrações, após o mute, a próxima repetição gera jail pelo dobro do silenciamento, respeitado o mínimo de 1 hora. Depois, aplica-se a progressão das prisões.',heads:['Infração','Primeira ocorrência','Repetição'],rows:[
-['Spam e flood','/warn','/mute 30 min'],['Uso abusivo de CAPS','/warn','/mute 15 min'],['Provocações leves','/warn','/mute 1h'],['Linguagem vulgar reiterada','/warn','/mute 1h'],['Ofensas pessoais','/mute 2h','/jail 4h'],['Ofensas graves','/mute 12h','/jail 12h'],['Publicidade não autorizada','/mute 12h','/jail 24h'],['Conteúdo sexual impróprio','/mute 24h','/jail 24h'],['Assédio reiterado','/mute 24h','/jail 48h'],['Discriminação ou ódio','/jail 48h','Prisão ampliada'],['Ameaças graves ou exposição de dados','/ban 30 dias ou permanente','Conforme gravidade']]},
-{title:'Jogabilidade',note:'A segunda reincidência amplia novamente a prisão; a terceira resulta em banimento. Quando a tabela não fixa o prazo, sua duração será estabelecida pela administração conforme o regulamento e o histórico.',heads:['Infração','Primeira punição','1ª reincidência'],rows:[
-['Perturbação intencional de eventos','/jail 2h','/jail 6h'],['Abuso de mecânicas','/jail 4h','/jail 12h'],['Construções para causar lag','/jail 6h','/jail 18h'],['Macro ou autoclicker não autorizado','/jail 12h','/jail 36h'],['Automação irregular de farms','/jail 12h','/jail 36h'],['Exploração de bugs sem impacto econômico relevante','/jail 24h','/jail 72h'],['Fraude entre jogadores','/jail 24h','/jail 72h'],['Manipulação econômica indevida','/jail 48h','/jail 7 dias'],['Personificação de membro da equipe','/jail 24h','/jail 72h']]},
-{title:'Banimento direto',note:'Detecções automatizadas de anticheat devem passar por validação técnica antes da aplicação de penalidades permanentes.',heads:['Infração','Penalidade'],rows:[
-['Cheats, X-Ray, KillAura ou Fly não autorizado','/ban 15 dias'],['Reincidência no uso de cheats','/ban permanente'],['Duplicação intencional de itens ou moedas','/ban 30 dias ou permanente'],['Ataques à infraestrutura ou vulnerabilidades críticas','/ban permanente'],['Comercialização irregular por dinheiro real','/ban 30 dias'],['Divulgação maliciosa de dados pessoais','/ban 30 dias ou permanente'],['Malware ou links de roubo de contas','/ban permanente'],['Fraudes graves contra jogadores ou a Network','/ban 30 dias ou permanente'],['Evasão deliberada de banimento','Prorrogação ou /ban permanente']]}];
-
 // Os identificadores dos artigos preservam os links publicados anteriormente.
 // A numeração exibida é contínua, conforme a ordem das categorias.
 let articleNumber = 0;
@@ -58,24 +50,134 @@ const chapterDescriptions = ['Princípios e responsabilidades.','Advertências, 
 chapters.forEach((c,i) => { c.description=chapterDescriptions[i]; });
 chapters.find(c=>c.id==='comunicacao').label='Chat e convivência';
 chapters.find(c=>c.id==='punicoes').label='Punições e reincidências';
-const rulePenalties = {
-  9:[[0,0]],10:[[0,1]],11:[[0,6],[2,6]],12:[[0,2],[0,4],[0,5]],13:[[0,9],[0,10]],14:[[0,3],[0,7]],15:[[0,8]],16:[[1,8]],
-  17:[[1,5],[2,2]],18:[[1,3],[1,4]],19:[[1,2]],20:[[1,1]],21:[[1,6],[2,7]],22:[[1,7],[2,2]],23:[[1,0]],24:[[2,0],[2,1]],25:[[2,3]],26:[[2,4]],27:[[2,5]],28:[[2,8]]
+// Referência de estrutura e prazos: regulamento HypexMC, consultado em 14/10/2026.
+// A Exorium mantém a prisão e acrescenta 30 ou 60 minutos por reincidência.
+function durationLabel(minutes){
+  const hours=Math.floor(minutes/60),rest=minutes%60;
+  if(!hours)return minutes+' minutos';
+  return hours+(hours===1?' hora':' horas')+(rest?' e '+rest+' minutos':'');
+}
+function prisonRows(baseMinutes,incrementMinutes,banDays,firstIncidence='Primeira ocorrência'){
+  return [
+    [firstIncidence,'Prisão',durationLabel(baseMinutes)],
+    ['1ª reincidência após a primeira prisão','Prisão',durationLabel(baseMinutes+incrementMinutes)],
+    ['2ª reincidência após a primeira prisão','Prisão',durationLabel(baseMinutes+2*incrementMinutes)],
+    ['3ª reincidência após a primeira prisão','Banimento',banDays+' dias']
+  ];
+}
+function communicationRows(muteMinutes,jailMinutes,incrementMinutes,banDays,warning=false){
+  return [
+    ...(warning?[['Primeira ocorrência','Advertência','Sem duração de bloqueio']]:[]),
+    [warning?'Repetição na mesma categoria':'Primeira ocorrência','Silenciamento',durationLabel(muteMinutes)],
+    ...prisonRows(jailMinutes,incrementMinutes,banDays,'Nova ocorrência após o silenciamento')
+  ];
+}
+function banRows(days){
+  return days==='permanent'?[['Primeira ocorrência','Banimento','Permanente']]:[
+    ['Primeira ocorrência','Banimento',days+' dias'],
+    ['Reincidência','Banimento','Permanente']
+  ];
+}
+function discordRows(minutes,warning=false){
+  return [
+    ...(warning?[['Primeira ocorrência','Advertência','Sem duração de bloqueio']]:[]),
+    [warning?'Repetição na mesma categoria':'Primeira ocorrência','Restrição de comunicação',durationLabel(minutes)],
+    ['Nova ocorrência após a restrição','Restrição de comunicação',durationLabel(minutes+60)],
+    ['Reincidência após a segunda restrição','Banimento do Discord','7 dias'],
+    ['Nova ocorrência após o banimento temporário','Banimento do Discord','Permanente']
+  ];
+}
+const sanctions={
+  9:[
+    {title:'Spam e flood individual',rows:communicationRows(30,60,30,7,true)},
+    {title:'Flood organizado ou coordenado',rows:communicationRows(240,240,30,7)}
+  ],
+  10:[{rows:communicationRows(30,60,30,7,true)}],
+  11:[
+    {title:'Publicidade não autorizada',rows:communicationRows(720,1440,60,15)},
+    {title:'Links de phishing, malware ou roubo de contas',rows:banRows('permanent')}
+  ],
+  12:[
+    {title:'Provocações leves e discussões',rows:communicationRows(120,120,30,7,true)},
+    {title:'Ofensas pessoais',rows:communicationRows(360,360,30,15)},
+    {title:'Ameaças reais ou ofensas graves',rows:banRows(7)}
+  ],
+  13:[
+    {title:'Discriminação e discurso de ódio',rows:prisonRows(2880,60,30)},
+    {title:'Ameaças graves contra a integridade de terceiros',rows:banRows(7)}
+  ],
+  14:[
+    {title:'Linguagem vulgar reiterada',rows:communicationRows(120,120,30,7,true)},
+    {title:'Conteúdo sexual explícito ou assédio sexual',rows:communicationRows(1440,1440,60,15)}
+  ],
+  15:[{rows:communicationRows(1440,2880,60,15)}],
+  16:[{rows:prisonRows(1440,60,15)}],
+  17:[
+    {title:'Exploração de bugs sem impacto econômico relevante',rows:prisonRows(1440,60,15)},
+    {title:'Duplicação intencional de itens ou moedas',rows:banRows('permanent')}
+  ],
+  18:[
+    {title:'Macro ou autoclicker não autorizado',rows:prisonRows(720,60,7)},
+    {title:'Automação irregular de farms',rows:prisonRows(720,60,7)}
+  ],
+  19:[{rows:prisonRows(360,30,7)}],
+  20:[{rows:prisonRows(240,30,7)}],
+  21:[
+    {title:'Má-fé ou fraude em negociações',rows:prisonRows(1440,60,7)},
+    {title:'Roubo ou fraude grave com apropriação de bens',rows:banRows('permanent')}
+  ],
+  22:[
+    {title:'Manipulação econômica sem duplicação',rows:prisonRows(2880,60,30)},
+    {title:'Duplicação intencional de recursos',rows:banRows('permanent')}
+  ],
+  23:[{rows:prisonRows(120,30,7)}],
+  24:[{title:'Cheats, X-Ray, KillAura, Fly e ferramentas não autorizadas',rows:banRows('permanent')}],
+  25:[{rows:banRows('permanent')}],
+  26:[{rows:banRows(30)}],
+  27:[{rows:banRows(10)}],
+  28:[
+    {title:'Evasão de silenciamento',rows:prisonRows(120,30,7)},
+    {title:'Evasão de prisão',rows:prisonRows(240,30,15)},
+    {title:'Evasão de banimento por conta alternativa',rows:banRows('permanent')}
+  ],
+  d1:[
+    {title:'Ofensas, desrespeito ou perseguição',rows:discordRows(360)},
+    {title:'Discriminação, discurso de ódio ou ameaça grave',rows:[['Primeira ocorrência','Banimento do Discord','Permanente']]}
+  ],
+  d2:[{rows:discordRows(30,true)}],
+  d3:[
+    {title:'Publicidade não autorizada',rows:discordRows(360)},
+    {title:'Links maliciosos, phishing ou roubo de contas',rows:[['Primeira ocorrência','Banimento do Discord','Permanente']]}
+  ],
+  d4:[
+    {title:'Conteúdo explícito ou violência gráfica',rows:discordRows(1440)},
+    {title:'Exposição de dados pessoais ou ameaça de exposição',rows:[['Primeira ocorrência','Banimento do Discord','Permanente']]}
+  ],
+  d5:[{rows:discordRows(30,true)}],
+  d6:[
+    {title:'Personificação de integrante da equipe',rows:discordRows(1440)},
+    {title:'Evasão de medida de moderação por outra conta',rows:[['Primeira ocorrência','Banimento do Discord','Permanente']]}
+  ]
 };
-const penaltyNotes = {
-  9:'Após o mute: /jail de 1 hora. Nas reincidências após prisão, aplica-se a progressão geral.',
-  10:'Após o mute: /jail de 1 hora. Nas reincidências após prisão, aplica-se a progressão geral.',
-  12:'Para provocações leves, a repetição após o mute gera /jail de 2 horas. Ofensas pessoais e graves seguem os respectivos prazos acima.',
-  14:'Para linguagem vulgar reiterada, a repetição após o mute gera /jail de 2 horas.',
-  5:'Tipo: advertência (/warn). Aplicação: uma única vez por categoria de infração leve; sem duração de bloqueio.',
-  6:'Tipo: silenciamento (/mute). Duração: conforme a infração, de 15 minutos a 24 horas na tabela vigente.',
-  7:'Tipo: prisão (/jail). Duração: conforme a infração e a reincidência; consulte os prazos junto a cada artigo.',
-  8:'Tipo: banimento (/ban). Duração: 15 dias, 30 dias ou permanente, conforme a infração; casos sem prazo fixado dependem da administração.',
-  29:'O prazo de validade do histórico é definido pela administração; este regulamento não fixa um período numérico.',
-  30:'A terceira reincidência após a primeira prisão gera /ban. Quando não houver prazo específico, a duração será definida pela administração.',
-  31:'O agravamento deve respeitar os limites da tabela; não há acréscimo fixo de tempo para todas as situações.',
-  32:'Denúncia falsa de má-fé: sujeita a punição, sem tipo ou duração específicos fixados neste regulamento.'
+const penaltyNotes={
+  5:'Uma única advertência por categoria de infração leve, apenas nas situações previstas na tabela.',
+  6:'Os prazos de silenciamento estão definidos junto à infração. Uma nova ocorrência após o silenciamento gera a prisão indicada na tabela.',
+  7:'Prisões com duração inicial de até 6 horas aumentam 30 minutos por reincidência. As de duração inicial superior a 6 horas aumentam 1 hora. A terceira reincidência após a primeira prisão gera banimento por 7, 15 ou 30 dias, conforme o artigo.',
+  8:'Infrações graves podem gerar banimento direto por 7, 10 ou 30 dias ou permanente, conforme o artigo. A reincidência após banimento temporário resulta em banimento permanente.',
+  29:'A reincidência considera novas ocorrências comprovadas da mesma categoria. Uma mesma conduta não pode contar mais de uma vez. Banimentos permanentes não expiram.',
+  30:'Nas reincidências após a primeira prisão, o acréscimo é de 30 minutos ou 1 hora, conforme o artigo. A terceira reincidência resulta no banimento indicado na tabela. Nova infração da mesma categoria após esse banimento temporário resulta em banimento permanente.',
+  31:'As agravantes exigem justificativa registrada e devem respeitar os limites da tabela correspondente. Uma mesma conduta não pode ser contada como várias reincidências.',
+  32:'Acusação falsa feita de má-fé: silenciamento por 8 horas; repetição: prisão por 8 horas, seguida de 9 horas e 10 horas nas duas reincidências seguintes; terceira reincidência após a primeira prisão: banimento por 15 dias. Falsificação de provas para incriminar terceiros: banimento permanente.',
+  24:'Detecções automatizadas do anticheat devem passar por validação técnica antes da aplicação de banimento permanente.',
+  28:'A evasão de banimento resulta em banimento permanente da conta alternativa e da conta principal. A evasão de silêncio ou prisão segue a respectiva tabela.',
 };
+const permanentAfterTemporary='Uma nova infração da mesma categoria após o banimento temporário indicado nesta tabela resulta em banimento permanente.';
+Object.keys(sanctions).filter(id=>!id.startsWith('d')).forEach(id=>{
+  if(sanctions[id].some(section=>section.rows.some(row=>row[1]==='Banimento'&&row[2]!=='Permanente'))){
+    penaltyNotes[id]=(penaltyNotes[id]?penaltyNotes[id]+' ':'')+permanentAfterTemporary;
+  }
+});
+
 const allowedClients=['Salwyrr Client','Badlion Client','LabyMod','Feather Launcher','Lunar Client'];
 const allowedMods=['Optifine','Sodium','Lithium','Indium','Mod Menu','MaLiLib','Litematica','Voxelmap','KronHUD','BetterPvP','Fabric API','OptiFabric'];
 const modsChapter={id:'mods',label:'Mods e clients permitidos',eyebrow:'COMPATIBILIDADE · MINECRAFT',title:'Personalize sua experiência.',intro:'Consulte os clients e mods permitidos na Exorium Network.',description:'Clients autorizados e limites de uso.',rules:[]};
@@ -89,7 +191,6 @@ const discordChapter={id:'discord',label:'Regras do Discord',eyebrow:'COMUNIDADE
  ]};
 discordChapter.rules.forEach((r,i)=>{r.number='D'+(i+1);});
 chapters.push(modsChapter,discordChapter);
-const discordPenalty='Medidas aplicáveis: advertência, restrição de comunicação (timeout), expulsão ou banimento, conforme a gravidade e a reincidência. Duração: não há prazo específico definido para o Discord neste regulamento; a equipe deve informar o prazo ao aplicar a medida. Os tempos de /mute e /jail do Minecraft não se aplicam automaticamente ao Discord.';
 
 // Exemplos ilustram as normas existentes, sem criar novas infrações ou prazos.
 const articleExamples = {
@@ -136,17 +237,6 @@ const articleExamples = {
   d4:'Compartilhar o telefone de um membro sem consentimento para constrangê-lo.',
   d5:'Reproduzir sons muito altos de propósito para interromper quem está conversando.',
   d6:'Criar outra conta para contornar uma medida de moderação ou fingir ser um administrador.'
-};
-const articlePolicyRows = {
-  5:[['Primeira ocorrência leve prevista','Advertência','Sem duração de bloqueio'],['Repetição na mesma categoria','Silenciamento','Conforme o artigo da infração']],
-  6:[['Infração de comunicação prevista','Silenciamento','15 minutos a 24 horas, conforme a infração'],['Nova ocorrência após o silenciamento','Prisão','Conforme o artigo da infração']],
-  7:[['Primeira ocorrência sujeita à prisão','Prisão','Conforme o artigo da infração'],['1ª reincidência após a primeira prisão','Prisão ampliada','Conforme o artigo; se não fixado, definido pela administração'],['2ª reincidência após a primeira prisão','Prisão novamente ampliada','Definido pela administração'],['3ª reincidência após a primeira prisão','Banimento','Conforme a infração; se não fixado, definido pela administração']],
-  8:[['Infração grave ou reincidência prevista','Banimento','15 dias, 30 dias ou permanente, conforme a infração']],
-  29:[['Nova ocorrência comprovada na mesma categoria','Progressão da penalidade correspondente','Conforme o artigo da infração']],
-  30:[['Primeira ocorrência leve prevista','Advertência','Sem duração de bloqueio'],['Repetição da infração leve','Silenciamento','Conforme o artigo da infração'],['Nova ocorrência após o silenciamento, ou infração de jogabilidade prevista','Prisão','Conforme o artigo da infração'],['1ª reincidência após a primeira prisão','Prisão ampliada','Conforme o artigo; se não fixado, definido pela administração'],['2ª reincidência após a primeira prisão','Prisão novamente ampliada','Definido pela administração'],['3ª reincidência após a primeira prisão','Banimento','Conforme a infração; se não fixado, definido pela administração'],['Infração grave prevista','Banimento direto','Conforme o artigo da infração']],
-  31:[['Agravante comprovada','Agravamento da penalidade','Dentro dos limites previstos para a infração']],
-  32:[['Denúncia falsa comprovada e feita de má-fé','A definir pela administração','Não especificado no regulamento']],
-  35:[['Vantagem ilícita comprovada','Remoção dos recursos obtidos (medida complementar)','Não se aplica']]
 };
 const policyChapters=chapters.filter(c=>['gerais','punicoes','recursos'].includes(c.id));
 const minecraftChapters=chapters.filter(c=>['comunicacao','jogabilidade','graves'].includes(c.id));

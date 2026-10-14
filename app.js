@@ -29,55 +29,11 @@ function generalPage(article,expandAll=false){
   return `<div class="page-intro"><h1>Regras Gerais</h1></div><a class="text-link" href="#carta-magna">Consultar infrações e punições <span aria-hidden="true">↗</span></a><div class="toolbar"><button class="text-button" id="expand">Expandir todos</button></div>${policyChapters.map(chapter=>`<section class="article-group" id="grupo-${chapter.id}"><div class="group-heading"><h2>${labels[chapter.id]}</h2></div>${chapter.rules.map(rule=>policyMarkup(rule,expandAll||String(rule[0])===String(article||1))).join('')}</section>`).join('')}<div class="section-head"><h2>Mods e clients permitidos</h2></div>${modsMarkup()}`;
 }
 
-// Mantém os prazos da tabela original, separando nome da penalidade e duração.
-function splitPenalty(value){
-  const match=value.match(/^\/(warn|mute|jail|ban)(?:\s+(.+))?$/);
-  if(match){
-    const names={warn:'Advertência',mute:'Silenciamento',jail:'Prisão',ban:'Banimento'};
-    const duration=match[1]==='warn'?'Sem duração de bloqueio':(match[2]||'Definido pela administração');
-    return [names[match[1]],duration.replace(/(\d+)h\b/g,'$1 horas').replace(/(\d+) min\b/g,'$1 minutos').replace(/^1 horas$/,'1 hora').replace(/^permanente$/,'Permanente')];
-  }
-  if(value==='Prisão ampliada')return ['Prisão ampliada','Definido pela administração'];
-  if(value==='Conforme gravidade')return ['Conforme gravidade','Definido pela administração'];
-  if(value==='Prorrogação ou /ban permanente')return ['Prorrogação do banimento ou banimento permanente','Prorrogação a definir ou permanente'];
-  return [readableText(value),'Não especificado no regulamento'];
-}
-
-function prisonProgression(start=1){
-  const rows=[];
-  if(start<=1)rows.push(['1ª reincidência após a primeira prisão','Prisão ampliada','Definido pela administração']);
-  if(start<=2)rows.push(['2ª reincidência após a primeira prisão','Prisão novamente ampliada','Definido pela administração']);
-  rows.push(['3ª reincidência após a primeira prisão','Banimento','Definido pela administração']);
-  return rows;
-}
-
-function penaltySections(rule){
-  const id=rule[0];
-  if(String(id).startsWith('d'))return [{rows:[['Conforme gravidade e reincidência','Advertência, restrição de comunicação, expulsão ou banimento','Sem prazo fixo; informado pela equipe']]}];
-  const refs=rulePenalties[id];
-  if(!refs)return [{rows:articlePolicyRows[id]||[['Não se aplica','Artigo sem punição autônoma','Não se aplica']]}];
-  if(id===24)return [{title:'Uso de cheats ou ferramentas não autorizadas',rows:[['Primeira ocorrência',...splitPenalty(penaltyGroups[2].rows[0][1])],['Reincidência',...splitPenalty(penaltyGroups[2].rows[1][1])]]}];
-  return refs.map(([groupIndex,rowIndex])=>{
-    const source=penaltyGroups[groupIndex].rows[rowIndex];
-    const rows=[['Primeira ocorrência',...splitPenalty(source[1])]];
-    if(source[2]){
-      const incidence=groupIndex===1||source[1].startsWith('/jail')?'1ª reincidência após a primeira prisão':'Repetição na mesma categoria';
-      rows.push([incidence,...splitPenalty(source[2])]);
-    }
-    if(groupIndex===0&&rowIndex<4){
-      rows.push(['Nova ocorrência após o silenciamento','Prisão',rowIndex<2?'1 hora':'2 horas'],...prisonProgression());
-    }else if(groupIndex===0&&rowIndex<9){
-      rows.push(...prisonProgression());
-    }else if(groupIndex===1||(groupIndex===0&&rowIndex===9)){
-      rows.push(...prisonProgression(2));
-    }
-    return {title:refs.length>1?source[0]:'',rows};
-  });
-}
+function penaltySections(rule){return sanctions[rule[0]]||[];}
 
 function penaltiesMarkup(rule){
   const tables=penaltySections(rule).map(section=>`<div class="penalty-section">${section.title?`<h4>${esc(section.title)}</h4>`:''}<div class="table-wrap" tabindex="0" role="region" aria-label="Punições do artigo ${esc(rule.number)}${section.title?' — '+esc(section.title):''}"><table><thead><tr><th scope="col">Incidência</th><th scope="col">Punição</th><th scope="col">Tempo</th></tr></thead><tbody>${section.rows.map(row=>`<tr>${row.map((value,i)=>`<${i?'td':'th scope="row"'}>${esc(value)}</${i?'td':'th'}>`).join('')}</tr>`).join('')}</tbody></table></div></div>`).join('');
-  const note=String(rule[0]).startsWith('d')?'Os tempos de silenciamento e prisão do Minecraft não se aplicam automaticamente ao Discord.':rule[0]===24?penaltyGroups[2].note:penaltyNotes[rule[0]];
+  const note=String(rule[0]).startsWith('d')?'Os tempos de silenciamento e prisão do Minecraft não se aplicam automaticamente ao Discord.':penaltyNotes[rule[0]];
   return `<section class="punishment"><h3>Tabela de Punição</h3>${tables}${note?`<p class="table-note">${esc(readableText(note))}</p>`:''}</section>`;
 }
 
