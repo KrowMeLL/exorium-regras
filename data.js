@@ -49,3 +49,44 @@ const penaltyGroups = [
 ['Perturbação intencional de eventos','/jail 2h','/jail 6h'],['Abuso de mecânicas','/jail 4h','/jail 12h'],['Construções para causar lag','/jail 6h','/jail 18h'],['Macro ou autoclicker não autorizado','/jail 12h','/jail 36h'],['Automação irregular de farms','/jail 12h','/jail 36h'],['Exploração de bugs sem impacto econômico relevante','/jail 24h','/jail 72h'],['Fraude entre jogadores','/jail 24h','/jail 72h'],['Manipulação econômica indevida','/jail 48h','/jail 7 dias'],['Personificação de membro da equipe','/jail 24h','/jail 72h']]},
 {title:'Banimento direto',note:'Detecções automatizadas de anticheat devem passar por validação técnica antes da aplicação de penalidades permanentes.',heads:['Infração','Penalidade'],rows:[
 ['Cheats, X-Ray, KillAura ou Fly não autorizado','/ban 15 dias'],['Reincidência no uso de cheats','/ban permanente'],['Duplicação intencional de itens ou moedas','/ban 30 dias ou permanente'],['Ataques à infraestrutura ou vulnerabilidades críticas','/ban permanente'],['Comercialização irregular por dinheiro real','/ban 30 dias'],['Divulgação maliciosa de dados pessoais','/ban 30 dias ou permanente'],['Malware ou links de roubo de contas','/ban permanente'],['Fraudes graves contra jogadores ou a Network','/ban 30 dias ou permanente'],['Evasão deliberada de banimento','Prorrogação ou /ban permanente']]}];
+
+// Os identificadores dos artigos preservam os links publicados anteriormente.
+// A numeração exibida é contínua, conforme a ordem das categorias.
+let articleNumber = 0;
+chapters.forEach(c => c.rules.forEach(r => { r.number = ++articleNumber; }));
+const chapterDescriptions = ['Princípios e responsabilidades.','Advertências, prazos e reincidências.','Chat, respeito e convivência.','Mecânicas, negociações e economia.','Trapaças, privacidade e segurança.','Atendimento, provas e revisão.'];
+chapters.forEach((c,i) => { c.description=chapterDescriptions[i]; });
+chapters.find(c=>c.id==='comunicacao').label='Chat e convivência';
+chapters.find(c=>c.id==='punicoes').label='Punições e reincidências';
+const rulePenalties = {
+  9:[[0,0]],10:[[0,1]],11:[[0,6],[2,6]],12:[[0,2],[0,4],[0,5]],13:[[0,9],[0,10]],14:[[0,3],[0,7]],15:[[0,8]],16:[[1,8]],
+  17:[[1,5],[2,2]],18:[[1,3],[1,4]],19:[[1,2]],20:[[1,1]],21:[[1,6],[2,7]],22:[[1,7],[2,2]],23:[[1,0]],24:[[2,0],[2,1]],25:[[2,3]],26:[[2,4]],27:[[2,5]],28:[[2,8]]
+};
+const penaltyNotes = {
+  9:'Após o mute: /jail de 1 hora. Nas reincidências após prisão, aplica-se a progressão geral.',
+  10:'Após o mute: /jail de 1 hora. Nas reincidências após prisão, aplica-se a progressão geral.',
+  12:'Para provocações leves, a repetição após o mute gera /jail de 2 horas. Ofensas pessoais e graves seguem os respectivos prazos acima.',
+  14:'Para linguagem vulgar reiterada, a repetição após o mute gera /jail de 2 horas.',
+  5:'Tipo: advertência (/warn). Aplicação: uma única vez por categoria de infração leve; sem duração de bloqueio.',
+  6:'Tipo: silenciamento (/mute). Duração: conforme a infração, de 15 minutos a 24 horas na tabela vigente.',
+  7:'Tipo: prisão (/jail). Duração: conforme a infração e a reincidência; consulte os prazos junto a cada artigo.',
+  8:'Tipo: banimento (/ban). Duração: 15 dias, 30 dias ou permanente, conforme a infração; casos sem prazo fixado dependem da administração.',
+  29:'O prazo de validade do histórico é definido pela administração; este regulamento não fixa um período numérico.',
+  30:'A terceira reincidência após a primeira prisão gera /ban. Quando não houver prazo específico, a duração será definida pela administração.',
+  31:'O agravamento deve respeitar os limites da tabela; não há acréscimo fixo de tempo para todas as situações.',
+  32:'Denúncia falsa de má-fé: sujeita a punição, sem tipo ou duração específicos fixados neste regulamento.'
+};
+const allowedClients=['Salwyrr Client','Badlion Client','LabyMod','Feather Launcher','Lunar Client'];
+const allowedMods=['Optifine','Sodium','Lithium','Indium','Mod Menu','MaLiLib','Litematica','Voxelmap','KronHUD','BetterPvP','Fabric API','OptiFabric'];
+const modsChapter={id:'mods',label:'Mods e clients permitidos',eyebrow:'COMPATIBILIDADE · MINECRAFT',title:'Personalize sua experiência.',intro:'Consulte os clients e mods permitidos na Exorium Network.',description:'Clients autorizados e limites de uso.',rules:[]};
+const discordChapter={id:'discord',label:'Regras do Discord',eyebrow:'COMUNIDADE · DISCORD',title:'A comunidade continua por aqui.',intro:'Estas regras abrangem os canais de texto, voz, perfis e interações no Discord da Exorium Network.',description:'Convivência nos canais de texto e voz.',rules:[
+ ['d1','Respeito e convivência','Não são permitidos insultos, discriminação, discurso de ódio, ameaças, assédio ou perseguição a membros da comunidade.'],
+ ['d2','Spam, flood e marcações','Não envie mensagens repetidas, correntes, menções em massa ou marcações insistentes da equipe. Utilize cada canal de acordo com sua finalidade.'],
+ ['d3','Publicidade e links','A divulgação de servidores, comunidades, produtos ou serviços depende de autorização da equipe. Links fraudulentos, maliciosos ou destinados ao roubo de contas são proibidos.'],
+ ['d4','Conteúdo e privacidade','Não publique conteúdo sexual explícito, violência gráfica ou dados pessoais de terceiros sem autorização. Não exponha conversas privadas para ameaçar ou constranger membros.'],
+ ['d5','Canais de voz','Respeite quem participa da conversa. Não utilize gritos, ruídos intencionais, reprodução de áudio excessivo ou outros recursos para perturbar os canais.'],
+ ['d6','Identidade, moderação e atendimento','Não se passe por integrante da equipe nem utilize contas alternativas para evitar medidas de moderação. Encaminhe denúncias e pedidos de revisão pelos canais de atendimento, com contexto e provas.']
+ ]};
+discordChapter.rules.forEach((r,i)=>{r.number='D'+(i+1);});
+chapters.push(modsChapter,discordChapter);
+const discordPenalty='Medidas aplicáveis: advertência, restrição de comunicação (timeout), expulsão ou banimento, conforme a gravidade e a reincidência. Duração: não há prazo específico definido para o Discord neste regulamento; a equipe deve informar o prazo ao aplicar a medida. Os tempos de /mute e /jail do Minecraft não se aplicam automaticamente ao Discord.';
