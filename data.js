@@ -148,8 +148,12 @@ const articlePolicyRows = {
   32:[['Denúncia falsa comprovada e feita de má-fé','A definir pela administração','Não especificado no regulamento']],
   35:[['Vantagem ilícita comprovada','Remoção dos recursos obtidos (medida complementar)','Não se aplica']]
 };
-const minecraftChapters=chapters.filter(c=>c.id!=='mods'&&c.id!=='discord');
+const policyChapters=chapters.filter(c=>['gerais','punicoes','recursos'].includes(c.id));
+const minecraftChapters=chapters.filter(c=>['comunicacao','jogabilidade','graves'].includes(c.id));
 const minecraftRules=minecraftChapters.flatMap(c=>c.rules);
+// Somente as infrações recebem numeração na Carta Magna. IDs publicados são preservados.
+minecraftRules.forEach((rule,index)=>{rule.number=index+1;});
+policyChapters.forEach(chapter=>chapter.rules.forEach(rule=>{delete rule.number;}));
 const commandNames={warn:'advertência',mute:'silenciamento',jail:'prisão',ban:'banimento'};
 function readableText(value){
   return String(value)
