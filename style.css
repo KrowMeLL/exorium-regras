@@ -78,3 +78,137 @@ select:focus-visible,.table-wrap:focus-visible{outline:3px solid var(--pink);out
   .general-principles{padding:20px}.allowed-panel{padding:20px}
 }
 @media print{.article-index,.rule-anchor{display:none}.rule{border-color:#bbb}.rule[open] summary,.example,thead th{background:#eee}.rule-body,.rule-body h3,tbody th,tbody td,tbody td:nth-child(2){color:#111}}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Exorium — alinhamento visual com a loja (exoriumnetwork.com.br).
+   Mesmos tokens, mesmas fontes, mesmos painéis de vidro. Esta camada vem
+   por último e sobrescreve o necessário, sem mexer no que já funcionava.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root{
+  /* tokens herdados da loja */
+  --bg:#140d1e;
+  --surface:rgba(255,255,255,.05);
+  --line:rgba(236,196,255,.16);
+  --muted:#c6b0d6;
+  --text:#fff1f8;
+  --purple:#b98cff;
+  --pink:#ff6fb6;
+
+  --ex-candy:#ff6fb6;
+  --ex-candy-soft:#ffa6d4;
+  --ex-lilac:#b98cff;
+  --ex-glass:rgba(255,255,255,.05);
+  --ex-glass-2:rgba(255,255,255,.085);
+  --ex-edge-hi:rgba(255,170,220,.46);
+  --ex-sh:0 20px 54px rgba(5,2,10,.5);
+  --ex-display:'Kanit','Trebuchet MS',sans-serif;
+  --ex-body:'Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ex-ease:cubic-bezier(.22,.8,.26,1);
+}
+
+/* a arte do servidor ao fundo, como na loja */
+body{
+  font-family:var(--ex-body);
+  background:var(--bg);
+  position:relative;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:url('banner.webp') center top/cover no-repeat;
+  opacity:.85;filter:blur(2px) saturate(1.3);transform:scale(1.06);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(20,13,30,.5) 0%,rgba(20,13,30,.76) 36%,rgba(20,13,30,.93) 70%,var(--bg) 100%),
+    radial-gradient(900px 520px at 50% 6%,rgba(255,111,182,.14),transparent 70%);
+}
+
+h1,h2,h3,.brand,.art,.rule-title{font-family:var(--ex-display)}
+h1,h2{letter-spacing:-.022em}
+
+/* ─── barra superior e lateral em vidro ─── */
+.topbar{
+  background:rgba(16,10,24,.86);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+}
+.brand small{color:var(--ex-candy-soft);letter-spacing:5px}
+.header-action{color:var(--ex-candy-soft);font-weight:600}
+aside{
+  background:rgba(16,10,24,.5);border-right:1px solid var(--line);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.side-heading{color:var(--ex-candy-soft)}
+nav a{border:1px solid transparent;transition:background-color .2s var(--ex-ease),border-color .2s var(--ex-ease),color .2s}
+nav a:hover{background:rgba(255,145,200,.13);border-color:rgba(255,171,214,.36);color:var(--text)}
+nav a.active{background:rgba(255,145,200,.18);border-color:rgba(255,171,214,.5);color:#ffd3ea;box-shadow:inset 3px 0 var(--ex-candy)}
+
+/* ─── busca ─── */
+.searchbox{
+  background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+.searchbox:focus-within{border-color:var(--ex-edge-hi)}
+
+/* ─── herói ─── */
+.hero{
+  border:1px solid var(--line);border-radius:22px;
+  box-shadow:var(--ex-sh),inset 0 1px 0 rgba(255,255,255,.08);
+  background:linear-gradient(90deg,rgba(20,13,30,.92),rgba(20,13,30,.55) 62%,rgba(20,13,30,.12)),url('banner.webp') center 50%/cover;
+}
+.eyebrow{color:var(--ex-candy-soft);letter-spacing:.2em}
+.hero-mark{filter:drop-shadow(0 14px 28px rgba(255,80,160,.34))}
+
+/* ─── painéis de vidro ─── */
+.category-card,.progress-panel,.general-principles,.allowed-panel,.next-page,.rule-penalty{
+  background:linear-gradient(162deg,var(--ex-glass-2),var(--ex-glass) 50%,rgba(255,255,255,.02));
+  border:1px solid var(--line);border-radius:18px;
+  box-shadow:var(--ex-sh),inset 0 1px 0 rgba(255,255,255,.08);
+  backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
+}
+.category-card:hover{border-color:var(--ex-edge-hi);background:linear-gradient(162deg,rgba(255,255,255,.11),rgba(255,255,255,.06) 50%,rgba(255,255,255,.03))}
+.card-icon{background:rgba(255,111,182,.14);color:var(--ex-candy-soft);border:1px solid var(--line);border-radius:11px}
+
+/* ─── artigos ─── */
+.rule summary::after{color:var(--ex-candy-soft)}
+.art{color:var(--ex-candy-soft);font-family:var(--ex-display);font-weight:600}
+.rule-title{font-weight:600}
+.rule-anchor,.text-link{color:var(--ex-candy-soft)}
+
+/* ─── tabela de punições: Incidência | Punição ─── */
+.table-wrap{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+thead th{background:rgba(255,111,182,.1);color:var(--ex-candy-soft);letter-spacing:.09em;text-transform:uppercase;font-size:11px}
+tbody th{background:transparent;text-transform:none;letter-spacing:0;font-size:14px}
+td,tbody th{border-top:1px solid var(--line)}
+tbody th{font-weight:600;color:var(--text)}
+tbody tr:hover{background:rgba(255,255,255,.045)}
+td:not(:first-child){min-width:190px;font-weight:600;color:#ffd9ec}
+.table-note{color:var(--muted)}
+
+/* ─── selos de punição ─── */
+.badge{border-radius:7px;font-family:var(--ex-body);font-weight:700}
+.badge.jail{color:#ffd3ea;background:rgba(255,111,182,.16);border-color:rgba(255,171,214,.42)}
+.badge.mute{color:#c2d9ff;background:rgba(123,160,255,.14);border-color:rgba(123,160,255,.36)}
+.badge.ban{color:#ffc0cb;background:rgba(255,122,143,.15);border-color:rgba(255,122,143,.38)}
+
+/* ─── botões no estilo da loja ─── */
+.community-links a{
+  border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.05);
+  transition:transform .18s var(--ex-ease),background-color .2s,border-color .2s;
+}
+.community-links a:hover{transform:translateY(-2px);border-color:var(--ex-edge-hi);background:rgba(255,145,200,.14)}
+.community-links .discord-button{background:#5865f2;border-color:#5865f2;color:#fff;box-shadow:0 3px 0 #3a45b8}
+.community-links .discord-button:hover{background:#6b76f5;border-color:#6b76f5}
+#menu{background:linear-gradient(118deg,#ffb4d9,var(--ex-candy) 56%,#d79bff);border:0;color:#2a0e22;font-weight:700;border-radius:10px;box-shadow:0 3px 0 #99305f}
+.text-button{border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.text-button:hover{border-color:var(--ex-edge-hi)}
+.callout{border-left:3px solid var(--ex-candy);background:rgba(255,111,182,.08);border-radius:0 12px 12px 0}
+.allowed-list li::before{color:var(--ex-candy-soft)}
+.restriction{color:#ffb9cf}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--ex-candy);outline-offset:3px}
+
+@media(max-width:760px){
+  aside{background:rgba(16,10,24,.96)}
+  .hero{border-radius:18px}
+}
+@media print{ body::before,body::after{display:none} }

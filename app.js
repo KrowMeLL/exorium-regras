@@ -32,7 +32,7 @@ function generalPage(article,expandAll=false){
 function penaltySections(rule){return sanctions[rule[0]]||[];}
 
 function penaltiesMarkup(rule){
-  const tables=penaltySections(rule).map(section=>`<div class="penalty-section">${section.title?`<h4>${esc(section.title)}</h4>`:''}<div class="table-wrap" tabindex="0" role="region" aria-label="Punições do artigo ${esc(rule.number)}${section.title?' — '+esc(section.title):''}"><table><thead><tr><th scope="col">Incidência</th><th scope="col">Punição</th><th scope="col">Tempo</th></tr></thead><tbody>${section.rows.map(row=>`<tr>${row.map((value,i)=>`<${i?'td':'th scope="row"'}>${esc(value)}</${i?'td':'th'}>`).join('')}</tr>`).join('')}</tbody></table></div></div>`).join('');
+  const tables=penaltySections(rule).map(section=>`<div class="penalty-section">${section.title?`<h4>${esc(section.title)}</h4>`:''}<div class="table-wrap" tabindex="0" role="region" aria-label="Punições do artigo ${esc(rule.number)}${section.title?' — '+esc(section.title):''}"><table><thead><tr><th scope="col">Incidência</th><th scope="col">Punição</th></tr></thead><tbody>${section.rows.map(row=>`<tr>${row.map((value,i)=>`<${i?'td':'th scope="row"'}>${esc(value)}</${i?'td':'th'}>`).join('')}</tr>`).join('')}</tbody></table></div></div>`).join('');
   const note=String(rule[0]).startsWith('d')?'Os tempos de silenciamento e prisão do Minecraft não se aplicam automaticamente ao Discord.':penaltyNotes[rule[0]];
   return `<section class="punishment"><h3>Tabela de Punição</h3>${tables}${note?`<p class="table-note">${esc(readableText(note))}</p>`:''}</section>`;
 }
