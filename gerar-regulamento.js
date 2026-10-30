@@ -53,7 +53,7 @@ const html =
 `<meta name="viewport" content="width=device-width,initial-scale=1">` +
 `<title>Regulamento completo · Exorium Network</title>` +
 `<meta name="description" content="Regulamento completo da Exorium Network em texto, sem JavaScript.">` +
-`<link rel="icon" href="logo.webp">` +
+`<link rel="icon" href="logo-mark.webp">` +
 `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>` +
 `<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">` +
 `<link rel="stylesheet" href="style.css">` +
